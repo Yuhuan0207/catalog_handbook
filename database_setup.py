@@ -1,30 +1,32 @@
 import sys
-from sqlalchemy import Column, ForeignKey, Integer, String
+import datetime
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
+from sqlalchemy.sql import func
 
 Base = declarative_base()
 
 
-class Restaurant(Base):
-    __tablename__ = 'restaurant'
+class Category(Base):
+    __tablename__ = 'category'
 
     name = Column(String(80), nullable=False)
     id = Column(Integer, primary_key=True)
 
 
-class MenuItem(Base):
-    __tablename__ = 'menu_item'
+class CatalogItem(Base):
+    __tablename__ = 'catalog_item'
 
     name = Column(String(80), nullable=False)
     id = Column(Integer, primary_key=True)
-    course = Column(String(250))
     description = Column(String(250))
-    price = Column(String(8))
-    restaurant_id = Column(Integer, ForeignKey('restaurant.id'))
-    restaurant = relationship(Restaurant)
+    category_id = Column(Integer, ForeignKey('category.id'))
+    timestamp = Column(DateTime(timezone=True), default=func.now())
+
+    restaurant = relationship(Category)
 
 
-engine = create_engine('sqlite:///restaurantmenu.db')
+engine = create_engine('sqlite:///catalog.db')
 Base.metadata.create_all(engine)
