@@ -14,11 +14,16 @@ If you have trouble with VM set up and running, refer to [Udacity Full Stack VM 
 
 ## Running the test
 ### Create Database
-
+Run the command:
+```
+python3 database_setup.py
+```
 
 ### Populate Data in the Database
-
-
+Run the command:
+```
+python3 lotsofitem.py
+```
 
 ### Launch the Flask Application
 
