@@ -25,7 +25,7 @@ class CatalogItem(Base):
     category_id = Column(Integer, ForeignKey('category.id'))
     timestamp = Column(DateTime(timezone=True), default=func.now())
 
-    restaurant = relationship(Category)
+    category = relationship(Category)
 
 
 engine = create_engine('sqlite:///catalog.db')
