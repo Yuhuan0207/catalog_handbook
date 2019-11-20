@@ -45,7 +45,7 @@ def showCategory(category_id):
 def editCategory(category_id):
     return render_template('editCategory.html')
 
-# [new] delete category
+# delete category [done]
 @app.route('/category/<int:category_id>/delete', methods=['GET','POST'])
 def deleteCategory(category_id):
     categoryToDelete=session.query(Category).filter_by(id=category_id).one()
@@ -72,7 +72,7 @@ def createItem(category_id):
 def editItem(item_id):
     return render_template('editItem.html')
 
-# [new] delete item
+# delete item [done]
 @app.route('/item/<int:item_id>/delete', methods=['GET','POST'])
 def deleteItem(item_id):
     itemToDelete=session.query(CatalogItem).filter_by(id=item_id).one()
