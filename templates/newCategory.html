@@ -7,10 +7,10 @@
 {% endblock %}
 
 
-
-
 {% block body %}
-
+<form action="{{url_for('createCategory')}}" method="POST">
+	<p>New Category</p>
+	<input type="text" name="name" size="30">
+	<input type="submit" name="Create">
+</form>
 {% endblock %}
-
-

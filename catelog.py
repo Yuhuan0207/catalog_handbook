@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Category, CatalogItem
@@ -11,48 +11,65 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind = engine)
 session = DBSession()
 
+# Home page, list all categories and newest items [done]
 @app.route('/')
 def homepage():  
     categories = session.query(Category).all()
     return render_template('home.html', categories = categories)
 
-# category related pages
+# List all categories, redirect to new/edit/delete category [done]
 @app.route('/category')
 def listAllCategory():
-    return render_template('allCategory.html')
-
-@app.route('/category/new')
+    categories = session.query(Category).all()
+    return render_template('allCategory.html', categories = categories)
+# Create new category [done]
+@app.route('/category/new', methods=['GET','POST'])
 def createCategory():
-    return render_template('newCategory.html')
+    if(request.method == 'POST'):
+        newCategory = Category(name=request.form['name'])
+        session.add(newCategory)
+        session.commit()
+        return redirect(url_for('listAllCategory'))
+    else:
+        return render_template('newCategory.html')
 
+# List all items in a certain category, redirect to edit/delete/new item [done]
 @app.route('/category/<int:category_id>')
 def showCategory(category_id):
     category = session.query(Category).filter_by(id = category_id).one()
     items = session.query(CatalogItem).filter_by(category_id = category_id)
     return render_template('showCategory.html', category = category, items = items)
 
+# [new] edit category
 @app.route('/category/<int:category_id>/edit')
 def editCategory(category_id):
     return render_template('editCategory.html')
 
+# [new] delete category
 @app.route('/category/<int:category_id>/delete')
 def deleteCategory(category_id):
     return render_template('deleteCategory.html')
 
-# Item related pages
-@app.route('/item/new')
-def createItem():
-    return render_template('newItem.html')
+# Add new item in a certain category [done]
+@app.route('/category/<int:category_id>/new', methods=['GET','POST'])
+def createItem(category_id):
+    if(request.method == 'POST'):
+        newItem = CatalogItem(name=request.form['name'], category_id=category_id)
+        session.add(newItem)
+        session.commit()
+        return redirect(url_for('showCategory', category_id=category_id))
+    else:
+        return render_template("newItem.html", category_id=category_id)
 
+# [new] edit item
 @app.route('/item/<int:item_id>/edit')
 def editItem(item_id):
     return render_template('editItem.html')
 
+# [new] delete item
 @app.route('/item/<int:item_id>/delete')
 def deleteItem(item_id):
     return render_template('deleteItem.html')
-
-
 
 if __name__ == '__main__':
     app.debug = True
