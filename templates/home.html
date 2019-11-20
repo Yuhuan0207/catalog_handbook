@@ -1,17 +1,23 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Catalog</title>
+</head>
 
+<body>
+	<h1>All Categories</h1>
 
-{% block head %}
-<h1>Home page</h1>
+	{% for i in categories %}
+		<div>
+			<p>{{i.id}}</p>
+			<p>{{i.name}}</p>
+<!-- 			<a href='{{url_for("editItem", item_id = i.id)}}'>Edit</a>
+			<a href='{{url_for("deleteItem", item_id = i.id)}}'>Delete</a> -->
+			<br/>			
+		</div>
+	{% endfor %}
 
-{% endblock %}
+	<h1>[Upcoming] New Items Trending</h1>
 
-
-
-
-{% block body %}
-<p>Show list of category and latest products</p>
-
-{% endblock %}
-
-
+</body>
+</html>
