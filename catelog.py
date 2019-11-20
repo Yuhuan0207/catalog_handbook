@@ -12,25 +12,31 @@ DBSession = sessionmaker(bind = engine)
 session = DBSession()
 
 @app.route('/')
-def homepage():
-	categories = session.query(Category).all()
+def homepage():  
+    categories = session.query(Category).all()
     return render_template('home.html', categories = categories)
 
 # category related pages
 @app.route('/category')
-def listCategory():
+def listAllCategory():
     return render_template('allCategory.html')
 
 @app.route('/category/new')
 def createCategory():
     return render_template('newCategory.html')
 
-@app.route('/category/<int:id>/edit')
-def editCategory():
+@app.route('/category/<int:category_id>')
+def showCategory(category_id):
+    category = session.query(Category).filter_by(id = category_id).one()
+    items = session.query(CatalogItem).filter_by(category_id = category_id)
+    return render_template('showCategory.html', category = category, items = items)
+
+@app.route('/category/<int:category_id>/edit')
+def editCategory(category_id):
     return render_template('editCategory.html')
 
-@app.route('/category/<int:id>/delete')
-def deleteCategory():
+@app.route('/category/<int:category_id>/delete')
+def deleteCategory(category_id):
     return render_template('deleteCategory.html')
 
 # Item related pages
@@ -38,12 +44,12 @@ def deleteCategory():
 def createItem():
     return render_template('newItem.html')
 
-@app.route('/item/<int:id>/edit')
-def editItem():
+@app.route('/item/<int:item_id>/edit')
+def editItem(item_id):
     return render_template('editItem.html')
 
-@app.route('/item/<int:id>/delete')
-def deleteItem():
+@app.route('/item/<int:item_id>/delete')
+def deleteItem(item_id):
     return render_template('deleteItem.html')
 
 
