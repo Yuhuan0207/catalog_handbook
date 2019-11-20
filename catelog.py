@@ -1,38 +1,49 @@
 from flask import Flask, render_template
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from database_setup import Base, Category, CatalogItem
+
 app = Flask(__name__)
 
+engine = create_engine('sqlite:///catalog.db')
+Base.metadata.bind = engine
+
+DBSession = sessionmaker(bind = engine)
+session = DBSession()
+
 @app.route('/')
-def hello_world():
-    return render_template('home.html')
+def homepage():
+	categories = session.query(Category).all()
+    return render_template('home.html', categories = categories)
 
 # category related pages
 @app.route('/category')
-def list_category():
+def listCategory():
     return render_template('allCategory.html')
 
 @app.route('/category/new')
-def create_category():
+def createCategory():
     return render_template('newCategory.html')
 
 @app.route('/category/<int:id>/edit')
-def edit_category():
+def editCategory():
     return render_template('editCategory.html')
 
 @app.route('/category/<int:id>/delete')
-def delete_category():
+def deleteCategory():
     return render_template('deleteCategory.html')
 
 # Item related pages
 @app.route('/item/new')
-def create_item():
+def createItem():
     return render_template('newItem.html')
 
 @app.route('/item/<int:id>/edit')
-def edit_item():
+def editItem():
     return render_template('editItem.html')
 
 @app.route('/item/<int:id>/delete')
-def delete_item():
+def deleteItem():
     return render_template('deleteItem.html')
 
 
