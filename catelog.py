@@ -46,9 +46,15 @@ def editCategory(category_id):
     return render_template('editCategory.html')
 
 # [new] delete category
-@app.route('/category/<int:category_id>/delete')
+@app.route('/category/<int:category_id>/delete', methods=['GET','POST'])
 def deleteCategory(category_id):
-    return render_template('deleteCategory.html')
+    categoryToDelete=session.query(Category).filter_by(id=category_id).one()
+    if(request.method=='POST'):
+        session.delete(categoryToDelete)
+        session.commit()
+        return redirect(url_for('listAllCategory'))
+    else:
+        return render_template('deleteCategory.html', category=categoryToDelete)
 
 # Add new item in a certain category [done]
 @app.route('/category/<int:category_id>/new', methods=['GET','POST'])
@@ -67,9 +73,15 @@ def editItem(item_id):
     return render_template('editItem.html')
 
 # [new] delete item
-@app.route('/item/<int:item_id>/delete')
+@app.route('/item/<int:item_id>/delete', methods=['GET','POST'])
 def deleteItem(item_id):
-    return render_template('deleteItem.html')
+    itemToDelete=session.query(CatalogItem).filter_by(id=item_id).one()
+    if(request.method=='POST'):
+        session.delete(itemToDelete)
+        session.commit()
+        return redirect(url_for('listAllCategory'))
+    else:
+        return render_template('deleteItem.html',item=itemToDelete)
 
 if __name__ == '__main__':
     app.debug = True
