@@ -11,89 +11,97 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind = engine)
 session = DBSession()
 
-# Home page, list all categories and newest items [done]
+# Home page
+# List all categories and newest items [done]
 @app.route('/')
 def homepage():  
     categories = session.query(Category).all()
     return render_template('home.html', categories = categories)
 
-# List all categories, redirect to new/edit/delete category [done]
-@app.route('/category/')
-def listAllCategory():
-    categories = session.query(Category).all()
-    return render_template('allCategory.html', categories = categories)
-# Create new category [done]
-@app.route('/category/new/', methods=['GET','POST'])
+# Category landing page:
+# List all items in a certain category, redirect to edit/delete/new item [done]
+@app.route('/<category_name>/')
+def showCategory(category_name):
+    category = session.query(Category).filter_by(name = category_name).one()    
+    items = session.query(CatalogItem).filter_by(category_id = category.id)
+    return render_template('categoryLandingPage.html', category = category, items = items)
+
+# New category page 
+@app.route('/new_category/', methods=['GET','POST'])
 def createCategory():
     if(request.method == 'POST'):
         newCategory = Category(name=request.form['name'])
         session.add(newCategory)
         session.commit()
-        return redirect(url_for('listAllCategory'))
+        return redirect(url_for('homepage'))
     else:
         return render_template('newCategory.html')
 
-# List all items in a certain category, redirect to edit/delete/new item [done]
-@app.route('/category/<int:category_id>/')
-def showCategory(category_id):
-    category = session.query(Category).filter_by(id = category_id).one()
-    items = session.query(CatalogItem).filter_by(category_id = category_id)
-    return render_template('showCategory.html', category = category, items = items)
-
-# edit category [done]
-@app.route('/category/<int:category_id>/edit/', methods=['GET','POST'])
-def editCategory(category_id):
-    categoryToEdit=session.query(Category).filter_by(id=category_id).one()
+# Edit category page 
+@app.route('/<category_name>/edit/', methods=['GET','POST'])
+def editCategory(category_name):
+    categoryToEdit=session.query(Category).filter_by(name=category_name).one()
     if(request.method=='POST'):
         categoryToEdit.name = request.form['name']
         session.add(categoryToEdit)
         session.commit()
-        return redirect(url_for('listAllCategory'))
+        return redirect(url_for('homepage'))
     else:    
         return render_template('editCategory.html', category=categoryToEdit)
 
-# delete category [done]
-@app.route('/category/<int:category_id>/delete/', methods=['GET','POST'])
+# Delete category page [done]
+@app.route('/<category_name>/delete/', methods=['GET','POST'])
 def deleteCategory(category_id):
-    categoryToDelete=session.query(Category).filter_by(id=category_id).one()
+    categoryToDelete=session.query(Category).filter_by(name=category_name).one()
     if(request.method=='POST'):
         session.delete(categoryToDelete)
         session.commit()
-        return redirect(url_for('listAllCategory'))
+        return redirect(url_for('homepage'))
     else:
         return render_template('deleteCategory.html', category=categoryToDelete)
 
-# Add new item in a certain category [done]
-@app.route('/category/<int:category_id>/new/', methods=['GET','POST'])
-def createItem(category_id):
+# Item landing page:
+# List detail of an item
+@app.route('/<category_name>/<item_name>')
+def showItem(category_name, item_name):
+    category = session.query(Category).filter_by(name = category_name).one()
+    item = session.query(CatalogItem).filter_by(name = item_name).one()
+    return render_template('itemLandingPage.html', item = item)
+
+# New item page
+@app.route('/<category_name>/new_item/', methods=['GET','POST'])
+def createItem(category_name):
     if(request.method == 'POST'):
-        newItem = CatalogItem(name=request.form['name'], category_id=category_id)
+        category = session.query(Category).filter_by(name = category_name).one()
+        newItem = CatalogItem(name=request.form['name'], category_id=category.id)
         session.add(newItem)
         session.commit()
-        return redirect(url_for('showCategory', category_id=category_id))
+        return redirect(url_for('showCategory', category_id=category.id))
     else:
-        return render_template("newItem.html", category_id=category_id)
+        return render_template("newItem.html", category_id=category.id)
 
-# [new] edit item
-@app.route('/item/<int:item_id>/edit/', methods = ['POST', 'GET'])
-def editItem(item_id):
-    itemToEdit=session.query(CatalogItem).filter_by(id=item_id).one()
-    if(request.method == 'POST'):
-        
+# Edit item page
+@app.route('/<category_name>/<item_name>/edit/', methods = ['POST', 'GET'])
+def editItem(category_name, item_name):
+    category = session.query(Category).filter_by(name = category_name).one()
+    itemToEdit = session.query(CatalogItem).filter_by(name = item_name).one()
+    if(request.method == 'POST'):        
         return redirect(url_for('homepage'))
     else:
-        return render_template('editItem.html', item =itemToEdit.id)
+        return render_template('editItem.html', item =itemToEdit)
 
-# delete item [done]
-@app.route('/item/<int:item_id>/delete/', methods=['GET','POST'])
-def deleteItem(item_id):
-    itemToDelete=session.query(CatalogItem).filter_by(id=item_id).one()
+# Delete item page
+@app.route('/<category_name>/<item_name>/delete/', methods=['GET','POST'])
+def deleteItem(category_name, item_name):
+    itemToDelete = session.query(CatalogItem).filter_by(name = item_name).one()
     if(request.method=='POST'):
         session.delete(itemToDelete)
         session.commit()
-        return redirect(url_for('listAllCategory'))
+        return redirect(url_for('homepage'))
     else:
         return render_template('deleteItem.html',item=itemToDelete)
+
+# Login page
 
 if __name__ == '__main__':
     app.debug = True

@@ -12,8 +12,8 @@
 			<p>{{i.name}}</p>
 			<p>{{i.description}}</p>
 			<p>{{i.timestamp}}</p>
-			<a href='{{url_for("editItem", item_id = i.id)}}'>Edit</a>
-			<a href='{{url_for("deleteItem", item_id = i.id)}}'>Delete</a>
+			<a href='{{url_for("editItem", category_name = category.name, item_name = i.name)}}'>Edit</a>
+			<a href='{{url_for("deleteItem", category_name = category.name, item_name = i.name)}}'>Delete</a>
 			<br/>			
 		</div>
 	{% endfor %}
