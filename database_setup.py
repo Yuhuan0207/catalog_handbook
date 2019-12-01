@@ -1,3 +1,4 @@
+import os
 import sys
 import datetime
 from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
@@ -14,6 +15,14 @@ class Category(Base):
 
     name = Column(String(80), nullable=False)
     id = Column(Integer, primary_key=True)
+    
+    @property
+    def serialize(self):
+        """Return object data in easily serializeable format"""
+        return {
+            'name': self.name,
+            'id': self.id,
+        }    
 
 
 class CatalogItem(Base):
@@ -26,6 +35,18 @@ class CatalogItem(Base):
     timestamp = Column(DateTime(timezone=True), default=func.now())
 
     category = relationship(Category)
+
+    @property
+    def serialize(self):
+        """Return object data in easily serializeable format"""
+        return {
+            'name': self.name,
+            'description': self.description,
+            'id': self.id,
+            'category_id': self.category_id,
+            'timestamp': self.timestamp,
+        }
+
 
 
 engine = create_engine('sqlite:///catalog.db')
