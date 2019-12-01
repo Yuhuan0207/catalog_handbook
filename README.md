@@ -1,8 +1,6 @@
 # Catalog Handbook Application
 This is prototype for a catalog handbook.
 
-There are four files in this project:
-
 
 ## Getting Started
 ### Installation 
@@ -13,23 +11,33 @@ After navigating to the directory that the VM file are stored, run `vagrant up` 
 If you have trouble with VM set up and running, refer to [Udacity Full Stack VM - troubleshooting](https://github.com/udacity/fullstack-nanodegree-vm#start-the-virtual-machine)
 
 ## Running the test
-### Create Database
-Run the command:
+### 1.Lauch vagrant
+After navigating to the directory of `Vagrantfile`, start the VM by running following commands:
+```
+vagrant up
+vagrant ssh
+```
+
+### 2. Create Database
+Navigate to the directory of `database_setup.py`, run the command:
 ```
 python3 database_setup.py
 ```
 
-### Populate Data in the Database
+### 3. Populate Data in the Database
 Run the command:
 ```
 python3 lotsofitem.py
 ```
 
-### Launch the Flask Application
+### 4. Launch the Flask Application
+Run the command:
+```
+python3 catelog.py
+```
 
-
-### Browsing Experience
-
+### 5. Browsing Experience
+Start the browsing experience by visiting `http://0.0.0.0:5000/` in your browser.
 
 ## Author
 - Yuhuan Fan 
