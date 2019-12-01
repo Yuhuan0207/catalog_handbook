@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Category, CatalogItem
@@ -103,6 +103,15 @@ def deleteItem(category_name, item_name):
 
 # Login page
 
+
+# API Endpoint
+@app.route('/<category_name>/JSON/')
+def catalogJSON():
+    category = session.query(Category).filter_by(name = category_name).first()
+    items = session.query(CatalogItem).filter_by(category_id = category.id).all()
+    return jsonify(CatalogItem = [i.serialize for i in items])
+
 if __name__ == '__main__':
     app.debug = True
-    app.run(host='0.0.0.0', port=5000)    
+    app.run(host='0.0.0.0', port=5000)
+
