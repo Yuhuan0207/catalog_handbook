@@ -39,6 +39,32 @@ python3 catelog.py
 ### 5. Browsing Experience
 Start the browsing experience by visiting `http://0.0.0.0:5000/` in your browser.
 
+### 6. Visit API Endpoint
+API endpoint is available for items in each category by visiting `/<category_name>/JSON/`
+Example output:
+```json
+
+{
+  "item": [
+    {
+      "category_id": 1,
+      "description": "Snowboard boots are designed to conform to your feet specifically",
+      "id": 1,
+      "name": "Boots",
+      "timestamp": "Sun, 01 Dec 2019 08:15:10 GMT"
+    },
+    {
+      "category_id": 1,
+      "description": "Snowboard socks are essential because cold feet will quickly ruin your day.",
+      "id": 2,
+      "name": "Snowboard Socks",
+      "timestamp": "Sun, 01 Dec 2019 08:15:10 GMT"
+    }
+  ]
+}
+```
+
+
 ## Author
 - Yuhuan Fan 
 
